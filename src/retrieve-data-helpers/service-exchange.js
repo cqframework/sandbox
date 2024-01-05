@@ -211,21 +211,24 @@ function callServices(dispatch, state, url, context, exchangeRound = 0) {
   };
 
   // Wait for prefetch to be fulfilled before making a request to the CDS service, if the service has prefetch expectations
-  const needPrefetch = serviceDefinition.prefetch
-    && Object.keys(serviceDefinition.prefetch).length > 0;
-
-  const prefetchPromise = needPrefetch
-    ? prefetchDataPromises(state, fhirServer, serviceDefinition.prefetch)
-    : Promise.resolve({});
-
-  return prefetchPromise.then((prefetchResults) => {
-    if (prefetchResults && Object.keys(prefetchResults).length > 0) {
-      request.prefetch = prefetchResults;
-    }
-    return sendRequest()
+  // const needPrefetch = serviceDefinition.prefetch
+  //   && Object.keys(serviceDefinition.prefetch).length > 0;
+  //
+  // const prefetchPromise = needPrefetch
+  //   ? prefetchDataPromises(state, fhirServer, serviceDefinition.prefetch)
+  //   : Promise.resolve({});
+  //
+  // return prefetchPromise.then((prefetchResults) => {
+  //   if (prefetchResults && Object.keys(prefetchResults).length > 0) {
+  //     request.prefetch = prefetchResults;
+  //   }
+  //   return sendRequest()
+  //     .then(dispatchResult)
+  //     .catch(dispatchErrors);
+  // });
+  return sendRequest()
       .then(dispatchResult)
       .catch(dispatchErrors);
-  });
 }
 
 export default callServices;

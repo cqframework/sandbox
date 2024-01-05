@@ -35,3 +35,16 @@ npm-debug.log
 *.swp
 
 aggregated-translations
+
+# IntelliJ
+.idea/
+*.iml
+
+# MAC
+.DS_Store
+
+# Build
+!/build/.well-known/
+!/build/.nojekyll
+!/build/CNAME
+build/

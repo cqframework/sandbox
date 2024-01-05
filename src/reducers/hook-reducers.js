@@ -26,13 +26,9 @@ const initialState = {
         },
       },
     },
-    pama: {
+    'rx-sign': {
       triggerPoints: {
-        'pama/order-select': {
-          hook: 'order-select',
-          lastExchangeRound: 0,
-        },
-        'pama/order-sign': {
+        'rx-sign/order-sign': {
           hook: 'order-sign',
           lastExchangeRound: 0,
         },
