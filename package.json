@@ -5,6 +5,7 @@
   "main": "build/bundle.js",
   "scripts": {
     "start": "node scripts/express/app.js",
+    "deploy": "gh-pages -d build",
     "dev": "webpack-dev-server --config webpack.config.dev.js --inline",
     "compile:heroku": "webpack --config webpack.config.prod.js --progress --colors --display-error-details",
     "build": "webpack --config webpack.config.prod.js --progress --colors --display-error-details",
@@ -16,12 +17,12 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cds-hooks/sandbox.git"
+    "url": "git+https://github.com/cqframework/sandbox.git"
   },
   "bugs": {
-    "url": "https://github.com/cds-hooks/sandbox/issues"
+    "url": "https://github.com/cqframework/sandbox/issues"
   },
-  "homepage": "https://github.com/cds-hooks/sandbox#readme",
+  "homepage": "http://cqframework.github.io/sandbox",
   "keywords": [
     "cds",
     "hooks",
