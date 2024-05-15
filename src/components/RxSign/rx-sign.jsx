@@ -25,12 +25,14 @@ import { createFhirResource } from '../../reducers/medication-reducers';
 import {
     storeUserMedInput, storeUserChosenMedication,
     storeMedDosageAmount, storeDispenseRequest, storeDate, toggleDate,
-    takeSuggestion,
+    takeSuggestion, signOrder
 } from '../../actions/medication-sign-actions';
 
+import * as types from '../../actions/action-types';
+
 cdsExecution.registerTriggerHandler('rx-sign/order-sign', {
-    needExplicitTrigger: false,
-    onSystemActions: () => { },
+    needExplicitTrigger: types.ORDER_SIGN_BUTTON_PRESS,
+    onSystemActions: () => {  },
     onMessage: () => { },
     generateContext: (state) => {
         const { fhirVersion } = state.fhirServerState;
@@ -98,6 +100,7 @@ const propTypes = {
      * Function to signal a change in the toggled status of the date (start or end)
      */
     toggleEnabledDate: PropTypes.func.isRequired,
+    signOrder: PropTypes.func.isRequired,
     /**
      * Function callback to take a specific suggestion from a card
      */
@@ -152,6 +155,7 @@ export class RxSign extends Component {
         this.selectStartDate = this.selectStartDate.bind(this);
         this.selectEndDate = this.selectEndDate.bind(this);
         this.toggleEnabledDate = this.toggleEnabledDate.bind(this);
+        this.signOrder = this.signOrder.bind(this);
     }
 
     /**
@@ -237,7 +241,10 @@ export class RxSign extends Component {
     }
 
     signOrder(event) {
-        this.state.medicationState.medListPhase = 'done';
+        this.setState({
+            medicationState: 'done'
+        });
+        this.props.signOrder(event)
     }
 
     render() {
@@ -297,7 +304,7 @@ export class RxSign extends Component {
                             value={this.state.supplyDuration}
                             onChange={this.changeSupplyDuration}
                             max={90}
-                            min={1}
+                            min={0}
                             step={5}
                             isInline
                         />
@@ -334,15 +341,15 @@ export class RxSign extends Component {
                             />
                         </Field>
                     </div>
-                    {/*<div>*/}
-                    {/*    <Field label="" isInline>*/}
-                    {/*        <Button*/}
-                    {/*            text="Sign Order"*/}
-                    {/*            variant="action"*/}
-                    {/*            onClick={this.signOrder}*/}
-                    {/*        />*/}
-                    {/*    </Field>*/}
-                    {/*</div>*/}
+                    <div>
+                        <Field label="" isInline>
+                            <Button
+                                text="Sign Order"
+                                variant="action"
+                                onClick={this.signOrder}
+                            />
+                        </Field>
+                    </div>
                 </form>
                 <CardList takeSuggestion={this.props.takeSuggestion} />
             </div>
@@ -381,6 +388,9 @@ const mapDispatchToProps = (dispatch) => (
         },
         toggleEnabledDate: (range) => {
             dispatch(toggleDate(range));
+        },
+        signOrder: (event) => {
+            dispatch(signOrder(event));
         },
         takeSuggestion: (suggestion) => {
             dispatch(takeSuggestion(suggestion));

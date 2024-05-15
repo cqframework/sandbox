@@ -71,6 +71,16 @@ export function toggleDate(range) {
 }
 
 /**
+ * Call service when sign order button is selected
+ */
+export function signOrder(event) {
+    return {
+        type: types.ORDER_SIGN_BUTTON_PRESS,
+        event,
+    }
+}
+
+/**
  * Takes action on the user-clicked suggestion from a card. The suggestion will be the suggestion chosen
  * from the CDS service response (exact format from specification).
  *

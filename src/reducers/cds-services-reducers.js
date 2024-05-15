@@ -20,7 +20,7 @@ const getPersistedServices = () => {
 const initialState = {
   configuredServices: {},
   configuredServiceUrls: getPersistedServices(),
-  defaultUrl: 'http://opioid-sandbox.cqframework.org/cdc/opioid-cds-r4/cds-service/cds-services',
+  defaultUrl: 'https://opioid-sandbox.cqframework.org/cdc/opioid-cds-r4/cds-service/cds-services',
   testServicesUrl: null,
 };
 

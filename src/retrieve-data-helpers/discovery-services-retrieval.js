@@ -24,7 +24,7 @@ function retrieveDiscoveryServices(testUrl) {
       method: 'get',
       url: discoveryUrl,
       headers: {
-        Accept: 'application/json',
+        Accept: '*/*',
         Authorization: `Bearer ${signedPrivateJWT}`,
       },
     }).then((result) => {

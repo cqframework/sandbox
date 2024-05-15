@@ -4,7 +4,7 @@ const initialState = {
   testFhirServer: null,
   currentFhirServer: '',
   currentMetadata: null,
-  defaultFhirServer: 'http://opioid-sandbox.cqframework.org/cdc/opioid-cds-r4/ehr/fhir',
+  defaultFhirServer: 'https://opioid-sandbox.cqframework.org/cdc/opioid-cds-r4/ehr/fhir',
   fhirVersion: '4.0.1',
   isDefaultFhirServer: true,
   accessToken: null,
