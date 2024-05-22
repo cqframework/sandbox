@@ -4,9 +4,9 @@ The CDS Hooks Sandbox (coined here as "Sandbox") is a tool that allows users to 
 
 Try out the live tool at [https://cdshooks-sandbox.org/](https://cdshooks-sandbox.org/)!
 
-See the roadmap detailing the status of onging enhancements/updates of the sandbox in the [wiki](https://github.com/cqframework/sandbox/wiki/Roadmap).
+See the [roadmap](https://github.com/cqframework/sandbox/wiki/Roadmap) to see the status of the onging enhancements/updates to the sandbox.
 
-Also check out the user guide in the [wiki](https://github.com/cqframework/sandbox/wiki/User-Guide).
+Also check out the [user guide](https://github.com/cqframework/sandbox/wiki/User-Guide) for further guidance.
 
 ## How it Works
 
