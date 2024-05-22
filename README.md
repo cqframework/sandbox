@@ -4,6 +4,9 @@ The CDS Hooks Sandbox (coined here as "Sandbox") is a tool that allows users to 
 
 Try out the live tool at [https://sandbox.cds-hooks.org](https://sandbox.cds-hooks.org)!
 
+See the roadmap detailing the status of onging enhancements/updates of the sandbox in the [wiki](https://github.com/cqframework/sandbox/wiki/Roadmap).
+
+Also check out the user guide in the [wiki](https://github.com/cqframework/sandbox/wiki/User-Guide).
 
 ## How it Works
 
@@ -15,6 +18,7 @@ The Sandbox supports the following CDS Hooks Workflows:
 
 - `patient-view`: On initial load, the Sandbox displays what looks like the opening of a patient's chart. A default CDS Service displays a card pertaining to the `patient-view` hook invoked on this view. On the toolbar in the header, the Patient View tab should be highlighted to indicate this default view. When navigated to this view, the Sandbox will invoke configured CDS Services listening on the `patient-view` hook.
 - `order-select`: Invoked by the Rx View tab on the header, the Sandbox displays an EHR-like view of a form a care provider would use to author a medication for a specific condition. With the patient in context, you can drill down into the specific (if any) conditions the patient has. Additionally, you can choose from an extensive list of medications to prescribe, and adjust dosage instructions accordingly. Any action taken on this view once a medication is prescribed will invoke the configured CDS Services on this tool listening on the `order-select` hook.
+- `order-sign`: Invoked by the Rx Sign tab on the header, the Sandbox displays an EHR-like view of a form a care provider would use to author and sign a medication. Additionally, you can choose from an extensive list of medications to prescribe, and adjust dosage instructions accordingly. Any action taken on this view once a medication is signed will invoke the configured CDS Services on this tool listening on the `order-sign` hook.
    
 ### Tools
 
@@ -46,6 +50,7 @@ While users have the option to configure properties of the Sandbox in-app like t
   - `prescribedMedication` - Coding code of a medication from the system, `http://www.nlm.nih.gov/research/umls/rxnorm` (i.e. `prescribedMedication=731370`)
   - `prescribedInstructionNumber` - Dosage number of medication to take (i.e. `prescribedInstructionNumber=2`)
   - `prescribedInstructionFrequency` - Dosage frequency of medication to take (i.e. `prescribedInstructionFrequency=bid`). Valid values are `daily`, `bid` (bi-daily), `tid` (three times daily), `qid` (four times daily)
+  - `prescribedSupplyDuration` - Dispense expected supply duration number of the medication (i.e. `prescribedSupplyDuration=30`)
   - `prescribedMedicationStartDate` - Start date of the medication (i.e. `prescribedMedicationStartDate=2018-06-01`)
   - `prescribedMedicationEndDate` - End date of the medication (i.e. `prescribedMedicationEndDate=2018-09-01`)
   - `prescribedReason` - Condition coding code for the reason of the medication (i.e. `prescribedReason=1201005`)
