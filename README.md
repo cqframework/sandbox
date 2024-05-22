@@ -2,7 +2,7 @@
 
 The CDS Hooks Sandbox (coined here as "Sandbox") is a tool that allows users to simulate the workflow of the [CDS Hooks](http://cds-hooks.org/) standard. It acts as a sort of "mock"-EHR that can be used as a demonstration tool for showing how CDS Hooks would work with an EHR system, as well as a testing tool to try out different CDS Services to ensure compatibility with the spec. This application is built using React and Redux.
 
-Try out the live tool at [https://sandbox.cds-hooks.org](https://sandbox.cds-hooks.org)!
+Try out the live tool at [https://cdshooks-sandbox.org/](https://cdshooks-sandbox.org/)!
 
 See the roadmap detailing the status of onging enhancements/updates of the sandbox in the [wiki](https://github.com/cqframework/sandbox/wiki/Roadmap).
 
@@ -82,7 +82,7 @@ You can develop on and run this project locally by using the following steps bel
 
 If you don't already have it, install the [LTS version](https://nodejs.org/en/download/) of `Node.js` on your machine and then install the project and its dependencies locally via the steps below in your terminal/shell:
 ```
-git clone https://github.com/cds-hooks/sandbox.git
+git clone https://github.com/cqframework/sandbox.git
 cd sandbox
 npm install
 ```
@@ -117,7 +117,7 @@ Note: This command will be run on each pull request to this repository, and any 
 
 ## Project Flow
 
-For more details on how this project is structured, and how to effectively make changes, [see these wiki pages](https://github.com/cds-hooks/sandbox/wiki).
+For more details on how this project is structured, and how to effectively make changes, [see these wiki pages](https://github.com/cqframework/sandbox/wiki).
 
 ## Contributing
 
@@ -126,6 +126,6 @@ We welcome any contributions to help further enhance this tool for the CDS Hooks
 1. [Fork this project](https://help.github.com/articles/fork-a-repo/) to make a copy of this repository onto your own Github profile
 1. Make necessary code changes onto your forked project and run the application locally to ensure expected behavior
 2. Lint and test the code changes to guarantee the project is maintained moving forward 
-3. Issue a pull request on the `cds-hooks/sandbox` repository with your changes for review
+3. Issue a pull request on the `cqframework/sandbox` repository with your changes for review
 4. Make any changes/revisions (as necessary)
 5. The project maintainers will merge the pull request in once approved
