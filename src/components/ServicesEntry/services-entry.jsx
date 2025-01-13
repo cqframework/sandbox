@@ -8,8 +8,8 @@ import Spacer from 'terra-spacer';
 import Text from 'terra-text';
 
 import styles from './services-entry.css';
-import BaseEntryBody from '../BaseEntryBody/base-entry-body';
 import retrieveDiscoveryServices from '../../retrieve-data-helpers/discovery-services-retrieval';
+import ServicesSelect from "../ServicesSelect/services-select";
 
 const propTypes = {
   /**
@@ -22,133 +22,144 @@ const propTypes = {
   closePrompt: PropTypes.func,
 };
 
+const defaultProps = {
+  isOpen: false,
+  closePrompt: null,
+};
+
 export class ServicesEntry extends Component {
-  constructor(props) {
-    super(props);
+  state = {
+    // Tracks whether the modal is open
+    isOpen: this.props.isOpen,
+    // User input for the discovery endpoint URL
+    userInput: '',
+    // Whether to display an error in the Field component
+    shouldDisplayError: false,
+    // Error message if `shouldDisplayError` is true
+    errorMessage: '',
+  };
 
-    this.state = {
-      /**
-       * Flag to determine if this modal is open
-       */
-      isOpen: props.isOpen,
-      /**
-       * Tracks the user input for the CDS service entry
-       */
-      userInput: '',
-      /**
-       * Flag to determine if the modal should display an error to the user face-up
-       */
-      shouldDisplayError: false,
-      /**
-       * Error message to display in the modal
-       */
-      errorMessage: '',
-    };
-
-    this.handleCloseModal = this.handleCloseModal.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.isOpen !== prevState.isOpen) {
-      return ({ isOpen: nextProps.isOpen });
+  componentDidUpdate(prevProps) {
+    // If the parent component toggles `isOpen`, reset relevant state
+    if (prevProps.isOpen !== this.props.isOpen) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        isOpen: this.props.isOpen,
+        shouldDisplayError: false,
+        errorMessage: '',
+        userInput: '',
+      });
     }
-    return null;
-  }
-
-  handleCloseModal() {
-    this.setState({ isOpen: false, shouldDisplayError: false, errorMessage: '' });
-    if (this.props.closePrompt) { this.props.closePrompt(); }
-  }
-
-  handleChange(e) {
-    this.setState({ userInput: e.target.value });
   }
 
   /**
-   * Trim the user input and test to make sure the URL is valid before setting state with the value.
-   * Once the URL is sanitized, check and make sure it is a valid discovery endpoint before storing the
-   * services in the Redux store. If the discovery endpoint fails, display an error message face-up to the user
+   * Closes the modal and clears any displayed errors.
    */
-  async handleSubmit() {
-    if (this.state.userInput === '' || !this.state.userInput || !this.state.userInput.trim()) {
-      this.setState({ shouldDisplayError: true, errorMessage: 'Enter a valid discovery endpoint' });
+  handleCloseModal = () => {
+    this.setState({ isOpen: false, shouldDisplayError: false, errorMessage: '' });
+    if (this.props.closePrompt) {
+      this.props.closePrompt();
     }
-    let checkUrl = this.state.userInput.trim();
+  };
+
+  /**
+   * Updates the local state whenever the input text changes.
+   */
+  handleChange = (event) => {
+    this.setState({ userInput: event.value });
+  };
+
+  /**
+   * Validates and sanitizes the user-input URL, attempts to retrieve discovery services,
+   * and closes the modal if successful. Otherwise, displays an error message.
+   */
+  handleSubmit = async () => {
+    const { userInput } = this.state;
+    const trimmed = userInput.trim();
+
+    if (!trimmed) {
+      this.setState({
+        shouldDisplayError: true,
+        errorMessage: 'Enter a valid discovery endpoint',
+      });
+      return;
+    }
+
+    let checkUrl = trimmed;
+    // Prepend "http://" if user didn't specify a protocol
     if (!/^(https?:)?\/\//i.test(checkUrl)) {
       checkUrl = `http://${checkUrl}`;
-      this.setState({
-        userInput: checkUrl,
-      });
+      this.setState({ userInput: checkUrl });
     }
+
     try {
-      await retrieveDiscoveryServices(checkUrl).then(() => {
-        this.handleCloseModal();
-      });
-    } catch (e) {
+      await retrieveDiscoveryServices(checkUrl);
+      // If retrieval succeeded, close the modal
+      this.handleCloseModal();
+    } catch (err) {
       this.setState({
         shouldDisplayError: true,
         errorMessage: 'Failed to connect to the discovery endpoint. See console for details.',
       });
     }
-  }
+  };
 
   render() {
-    const headerContainer = (
-      <Text weight={700} fontSize={20}>Add CDS Services</Text>
-    );
+    const {
+      isOpen, shouldDisplayError, errorMessage,
+    } = this.state;
 
-    const footerContainer = (
-      <div className={styles['right-align']}>
-        <Button text="Save" variant="emphasis" onClick={this.handleSubmit} />
-        <Spacer marginLeft="small" isInlineBlock>
-          <Button text="Cancel" onClick={this.handleCloseModal} />
-        </Spacer>
-      </div>
+    const header = <Text weight={700} fontSize={20}>Add CDS Services</Text>;
+
+    const footer = (
+        <div className={styles['right-align']}>
+          <Button text="Save" variant="emphasis" onClick={this.handleSubmit} />
+          <Spacer marginLeft="small" isInlineBlock>
+            <Button text="Cancel" onClick={this.handleCloseModal} />
+          </Spacer>
+        </div>
     );
 
     return (
-      <div>
         <Modal
-          ariaLabel="CDS Services"
-          isOpen={this.state.isOpen}
-          closeOnEsc
-          closeOnOutsideClick
-          onRequestClose={this.handleCloseModal}
-          classNameModal={styles['fixed-size']}
+            ariaLabel="CDS Services"
+            isOpen={isOpen}
+            closeOnEsc
+            closeOnOutsideClick
+            onRequestClose={this.handleCloseModal}
+            classNameModal={styles['fixed-size']}
         >
           <Dialog
-            header={headerContainer}
-            footer={footerContainer}
-            onClose={this.handleCloseModal}
+              header={header}
+              footer={footer}
+              onClose={this.handleCloseModal}
           >
-            <BaseEntryBody
-              formFieldLabel="Enter discovery endpoint url"
-              shouldDisplayError={this.state.shouldDisplayError}
-              errorMessage={this.state.errorMessage}
-              placeholderText="https://example-services.com/cds-services"
-              inputOnChange={this.handleChange}
-              inputName="discovery-endpoint-input"
+            <ServicesSelect
+                formFieldLabel="Enter discovery endpoint url"
+                shouldDisplayError={shouldDisplayError}
+                errorMessage={errorMessage}
+                placeholderText="https://example-services.com/cds-services"
+                inputOnChange={this.handleChange}
+                inputName="discovery-endpoint-input"
             />
             <Text isItalic>
               Note: See&nbsp;
               <a
-                href="https://cds-hooks.org/specification/current/#discovery"
-                rel="noreferrer noopener"
-                target="_blank"
+                  href="https://cds-hooks.org/specification/current/#discovery"
+                  rel="noreferrer noopener"
+                  target="_blank"
               >
                 documentation
               </a>
-&nbsp;for more details regarding the Discovery endpoint.
+              &nbsp;for more details regarding the Discovery endpoint.
             </Text>
           </Dialog>
         </Modal>
-      </div>
     );
   }
 }
 
 ServicesEntry.propTypes = propTypes;
+ServicesEntry.defaultProps = defaultProps;
 
 export default ServicesEntry;
