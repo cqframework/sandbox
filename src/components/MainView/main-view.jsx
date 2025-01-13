@@ -14,7 +14,6 @@ import Header from '../Header/header';
 import PatientView from '../PatientView/patient-view';
 import RxView from '../RxView/rx-view';
 import RxSign from '../RxSign/rx-sign';
-import Pama from '../Pama/pama';
 import ContextView from '../ContextView/context-view';
 import FhirServerEntry from '../FhirServerEntry/fhir-server-entry';
 import PatientEntry from '../PatientEntry/patient-entry';
@@ -217,7 +216,6 @@ export class MainView extends Component {
       'patient-view': <PatientView />,
       'rx-view': <RxView />,
       'rx-sign': <RxSign />,
-      pama: <Pama />,
     }[this.props.screen];
 
     const container = !this.props.isCardDemoView ? (

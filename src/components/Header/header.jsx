@@ -294,7 +294,6 @@ export class Header extends Component {
           <button className={this.getNavClasses('patient-view')} onClick={() => this.switchHook('patient-view')}>Patient View</button>
           <button className={this.getNavClasses('rx-view')} onClick={() => this.switchHook('order-select', 'rx-view')}>Rx View</button>
           <button className={this.getNavClasses('rx-sign')} onClick={() => this.switchHook('order-sign', 'rx-sign')}>Rx Sign</button>
-          <button className={this.getNavClasses('pama')} onClick={() => this.switchHook('order-select', 'pama')}>PAMA Imaging</button>
         </div>
       </div>
     );
