@@ -1,3 +1,4 @@
+
 import moment from 'moment';
 import queryString from 'query-string';
 import compareVersions from 'compare-versions';
@@ -238,14 +239,6 @@ const filterSearch = (input) => {
   return newIngredients;
 };
 
-// Converts string numbers that contain decimals into Number objects to use for sorting medications
-const toNumbers = (medication) => (
-  medication.name.match(/(\d*\.?\d*)/g)
-    .filter((v) => v.length > 0)
-    .map((d) => Number(d))
-    .filter((n) => !Number.isNaN(n))
-);
-
 const compareArrays = (a, b) => {
   if (a.length === 0 && b.length === 0) {
     return 0;
@@ -264,26 +257,6 @@ const compareArrays = (a, b) => {
   }
   return compareArrays(a.slice(1), b.slice(1));
 };
-
-const compareDrugNames = (a, b) => (compareArrays(toNumbers(a), toNumbers(b)));
-
-const getMedicationComponentsList = (input) => (
-  rxnorm.pillToComponentSets[input.id].map((medSet) => (
-    {
-      name: medSet.map((id) => rxnorm.cuiToName[id]).join(' / '),
-      id: medSet,
-    }
-  )).sort(compareDrugNames)
-);
-
-const getMedicationPrescribableList = (input) => (
-  rxnorm.componentSetsToPrescribables[input.id.join(',')].map((medSet) => (
-    {
-      name: rxnorm.cuiToName[medSet],
-      id: medSet,
-    }
-  )).sort(compareDrugNames)
-);
 
 const medicationReducers = (state = initialState, action) => {
   if (action.type) {
@@ -307,46 +280,17 @@ const medicationReducers = (state = initialState, action) => {
         };
       }
 
-      // Store the medication choice the user settled on in Rx View
+      // Store the medication choice the user settled on in Rx View and Rx Sign
       case types.STORE_USER_CHOSEN_MEDICATION: {
-        if (state.medListPhase === 'ingredient') {
-          return {
-            ...state,
-            medListPhase: 'components',
-            decisions: {
-              ...state.decisions,
-              ingredient: action.medication,
-            },
-            options: {
-              ...state.options,
-              components: getMedicationComponentsList(action.medication),
-            },
-          };
-        } if (state.medListPhase === 'components') {
-          return {
-            ...state,
-            medListPhase: 'prescribable',
-            decisions: {
-              ...state.decisions,
-              components: action.medication,
-            },
-            options: {
-              ...state.options,
-              prescribable: getMedicationPrescribableList(action.medication),
-            },
-          };
-        } if (state.medListPhase === 'prescribable') {
-          return {
-            ...state,
-            medListPhase: 'done',
-            userInput: '',
-            decisions: {
-              ...state.decisions,
-              prescribable: action.medication,
-            },
-          };
-        }
-        return state;
+        return {
+          ...state,
+          medListPhase: 'done',
+          userInput: '',
+          decisions: {
+            ...state.decisions,
+            prescribable: action.medication,
+          },
+        };
       }
 
       // Stores the user-chosen condition from the list of conditions for the current patient

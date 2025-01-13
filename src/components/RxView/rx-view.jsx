@@ -9,12 +9,8 @@ import Field from 'terra-form-field';
 // import Checkbox from 'terra-form-checkbox';
 import Select from 'react-select';
 import SelectField from 'terra-form-select';
-import Text from 'terra-text';
-import Input, { InputField } from 'terra-form-input';
+import InputField from 'terra-form-input';
 import DatePicker from 'terra-date-picker';
-import List, { Item } from 'terra-list';
-
-import debounce from 'debounce';
 
 import cdsExecution from '../../middleware/cds-execution';
 import CardList from '../CardList/card-list';
@@ -23,11 +19,13 @@ import styles from './rx-view.css';
 import { createFhirResource } from '../../reducers/medication-reducers';
 
 import {
-  storeUserMedInput, storeUserChosenMedication,
+  storeUserChosenMedication,
   storeUserCondition,
   storeMedDosageAmount, storeDate, toggleDate,
   takeSuggestion,
 } from '../../actions/medication-select-actions';
+import LazyMedSearchSelect from "../LazyMedSearchSelect/lazy-med-search-select";
+import Form from "react-bootstrap/Form";
 
 cdsExecution.registerTriggerHandler('rx-view/order-select', {
   needExplicitTrigger: false,
@@ -77,10 +75,6 @@ const propTypes = {
    * Coding code from the selected Condition resource in context
    */
   selectedConditionCode: PropTypes.string,
-  /**
-   * Function for storing user input when the medication field changes
-   */
-  onMedicationChangeInput: PropTypes.func.isRequired,
   /**
    * Function to signal a chosen medication
    */
@@ -152,7 +146,7 @@ export class RxView extends Component {
       },
     };
 
-    this.changeMedicationInput = this.changeMedicationInput.bind(this);
+    this.selectMedication = this.selectMedication.bind(this);
     this.selectCondition = this.selectCondition.bind(this);
     this.changeDosageAmount = this.changeDosageAmount.bind(this);
     this.changeDosageFrequency = this.changeDosageFrequency.bind(this);
@@ -187,16 +181,21 @@ export class RxView extends Component {
     return null;
   }
 
+  selectMedication(event) {
+    if (event === null) {
+      this.props.chooseMedication({id: '', name: ''});
+      this.setState({ value: '' });
+    } else {
+      this.props.chooseMedication({id: event.value, name: event.label});
+      this.setState({value: event.label});
+    }
+  }
+
   // Note: A second parameter (selected value) is supplied automatically by the Terra onChange function for the Form Select component
   selectCondition(event) {
     this.props.chooseCondition(event.value);
     this.setState({ conditionCode: event.value });
     this.setState({ conditionDisplay: event.label });
-  }
-
-  changeMedicationInput(event) {
-    this.setState({ value: event.target.value });
-    debounce(this.props.onMedicationChangeInput(event.target.value), 50);
   }
 
   // Note: Bound the dosage amount to a value between 1 and 5
@@ -261,7 +260,6 @@ export class RxView extends Component {
 
   render() {
     const isHalfView = this.props.isContextVisible ? styles['half-view'] : '';
-    const medicationArray = this.props.medications;
 
     return (
       <div className={cx(styles['rx-view'], isHalfView)}>
@@ -285,36 +283,31 @@ export class RxView extends Component {
             labelAttrs={{ className: styles['medication-field'] }}
             required
           >
-            <Input
-              name="medication-input"
-              value={this.state.value}
-              onChange={this.changeMedicationInput}
-            />
-            <List dividerStyle="standard">
-              {medicationArray.map((med) => (
-                <Item
-                  key={med.id}
-                  isSelectable
-                  onSelect={() => { this.props.chooseMedication(med); }}
-                >
-                  <p>{med.name}</p>
-                </Item>
-              ))}
-            </List>
+            <LazyMedSearchSelect onChange={this.selectMedication} />
           </Field>
-          {this.props.prescription ? <Text isItalic fontSize={16}>{this.props.prescription.name}</Text> : null}
           <div className={styles['dose-instruction']}>
-            <InputField
-              inputId="dosage-amount"
-              label="Number"
-              type="number"
-              value={this.state.dosageAmount}
-              onChange={this.changeDosageAmount}
-              inputAttrs={{
-                name: 'dosage-amount',
-              }}
-              isInline
-            />
+            <Field
+                label="Number"
+                labelAttrs={{ className: styles['dosage-amount'] }}
+                isInline
+            >
+              <InputField
+                  inputId="dosage-amount"
+                  label=""
+                  type="number"
+                  value={this.state.dosageAmount}
+                  onChange={this.changeDosageAmount}
+                  inputAttrs={{
+                    name: 'dosage-amount',
+                  }}
+              />
+              <Form.Range
+                  value={this.state.dosageAmount}
+                  onChange={this.changeDosageAmount}
+                  min={1}
+                  max={5}
+              />
+            </Field>
             <Field label="Frequency" isInline>
               <SelectField
                 name="dosage-frequency"
@@ -371,9 +364,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => (
   {
-    onMedicationChangeInput: (input) => {
-      dispatch(storeUserMedInput(input));
-    },
     chooseMedication: (medication) => {
       dispatch(storeUserChosenMedication(medication));
     },

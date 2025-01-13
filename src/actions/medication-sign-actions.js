@@ -1,13 +1,13 @@
 import * as types from './action-types';
 
 /**
- * Sets the user input from the medication select input box
- * @param {*} input - User input string
+ * Sets the specific condition from the condition select input box
+ * @param {*} condition - String of the condition ID
  */
-export function storeUserMedInput(input) {
+export function storeUserChosenCondition(condition) {
   return {
-    type: types.STORE_USER_MED_INPUT,
-    input,
+    type: types.STORE_USER_CONDITION,
+    condition,
   };
 }
 
