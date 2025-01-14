@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
@@ -28,60 +28,50 @@ const propTypes = {
   panelHeader: PropTypes.string.isRequired,
 };
 
-/**
- * Component representing a single CDS Developer panel
- */
-class ExchangePanel extends Component {
-  constructor(props) {
-    super(props);
+const ExchangePanel = ({ isExpanded, panelText, panelHeader }) => {
+  const [expanded, setExpanded] = useState(isExpanded);
 
-    this.state = ({
-      isExpanded: this.props.isExpanded,
-    });
+  const handleToggle = () => {
+    setExpanded((prevExpanded) => !prevExpanded);
+  };
 
-    this.toggleExpansion = this.toggleExpansion.bind(this);
-  }
+  // Convert panelText to an array of lines, memoized for performance
+  const textLines = useMemo(() => {
+    if (!panelText) return [];
+    const jsonString = typeof panelText === 'object'
+        ? JSON.stringify(panelText, null, 2)
+        : panelText;
+    return jsonString.split(/\n/);
+  }, [panelText]);
 
-  /**
-   * Toggles the body display of a single context view panel (i.e. shows/hides the request panel)
-   */
-  toggleExpansion() {
-    this.setState({ isExpanded: !this.state.isExpanded });
-  }
+  const iconToggle = expanded ? <IconChevronDown /> : <IconChevronRight />;
 
-  render() {
-    const text = this.props.panelText ? JSON.stringify(this.props.panelText, null, 2).split(/\n/) : '';
-    const textHtml = text ? text.map((l, i) => (
-      <div key={`${l}-${i}`}>{l}</div>
-    )) : '';
-
-    const iconToggle = this.state.isExpanded ? <IconChevronDown /> : <IconChevronRight />;
-
-    return (
+  return (
       <Card>
         <Heading
-          className={styles['header-toggle']}
-          level={1}
-          size="medium"
-          weight={700}
-          onClick={this.toggleExpansion}
+            className={styles['header-toggle']}
+            level={1}
+            size="medium"
+            weight={700}
+            onClick={handleToggle}
         >
           {iconToggle}
-          {this.props.panelHeader}
+          {panelHeader}
         </Heading>
-        <Toggle isOpen={this.state.isExpanded} isAnimated>
+        <Toggle isOpen={expanded} isAnimated>
           <Card.Body>
             <div className={cx(styles['fhir-view'], styles['panel-text'], styles['panel-height'])}>
-              <pre>
-                {textHtml}
-              </pre>
+            <pre>
+              {textLines.map((line, index) => (
+                  <div key={`${line}-${index}`}>{line}</div>
+              ))}
+            </pre>
             </div>
           </Card.Body>
         </Toggle>
       </Card>
-    );
-  }
-}
+  );
+};
 
 ExchangePanel.propTypes = propTypes;
 

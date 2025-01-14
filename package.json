@@ -64,6 +64,7 @@
     "terra-aggregate-translations": "^1.1.0",
     "terra-application-header-layout": "2.1.0",
     "terra-base": "^3.12.0",
+    "terra-brand-footer": "^3.14.0",
     "terra-button": "^3.77.0",
     "terra-card": "^3.48.0",
     "terra-content-container": "^3.42.0",

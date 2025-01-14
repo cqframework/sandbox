@@ -20,6 +20,7 @@ import PatientEntry from '../PatientEntry/patient-entry';
 import CardDemo from '../CardDemo/card-demo';
 import { setLoadingStatus } from '../../actions/ui-actions';
 import { setHook } from '../../actions/hook-actions';
+import Footer from "../Footer/footer";
 
 const propTypes = {
   /**
@@ -253,6 +254,9 @@ export class MainView extends Component {
           <Header />
         </div>
         {this.props.isLoadingData ? '' : container}
+        <div>
+          <Footer />
+        </div>
       </div>
     );
   }
