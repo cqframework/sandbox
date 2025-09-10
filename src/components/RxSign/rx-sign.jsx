@@ -11,7 +11,7 @@ import Select from 'react-select';
 import SelectField from 'terra-form-select';
 import Text from 'terra-text';
 import Input, { InputField } from 'terra-form-input';
-import DatePicker from 'terra-date-picker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import List, { Item } from 'terra-list';
 import Button from 'terra-button';
 
@@ -371,9 +371,10 @@ export class RxSign extends Component {
               isInline
             >
               <DatePicker
-                name="start-date"
-                selectedDate={this.state.startRange.value}
+                label="Start Date"
+                value={this.state.startRange.value}
                 onChange={this.selectStartDate}
+                slotProps={{ textField: { size: 'small', fullWidth: true } }}
               />
             </Field>
             <Field
@@ -381,9 +382,10 @@ export class RxSign extends Component {
               isInline
             >
               <DatePicker
-                name="end-date"
-                selectedDate={this.state.endRange.value}
+                name="End Date"
+                value={this.state.endRange.value}
                 onChange={this.selectEndDate}
+                slotProps={{ textField: { size: 'small', fullWidth: true } }}
               />
             </Field>
           </div>

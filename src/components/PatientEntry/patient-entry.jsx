@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import Modal from 'terra-modal';
-import Button from 'terra-button';
-import Dialog from 'terra-dialog';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 import Spacer from 'terra-spacer';
 import Text from 'terra-text';
 
@@ -153,21 +156,24 @@ export class PatientEntry extends Component {
           onRequestClose={this.handleCloseModal}
           classNameModal={styles['fixed-size']}
         >
-          <Dialog
-            header={headerContainer}
-            footer={footerContainer}
-            onClose={this.props.isEntryRequired ? null : this.handleCloseModal}
-          >
-            <PatientSelect
-              currentFhirServer={this.props.currentFhirServer}
-              formFieldLabel="Select a Patient"
-              shouldDisplayError={this.state.shouldDisplayError}
-              errorMessage={this.state.errorMessage}
-              placeholderText={this.state.currentPatient}
-              inputOnChange={this.handleChange}
-              inputName="patient-input"
-              patients={this.state.patients}
-            />
+          <Dialog open={isOpen} onClose={closePrompt} fullWidth maxWidth="sm">
+              <DialogTitle>Choose a patient</DialogTitle>
+              <DialogContent dividers>
+                <PatientSelect
+                  currentFhirServer={this.props.currentFhirServer}
+                  formFieldLabel="Select a Patient"
+                  shouldDisplayError={this.state.shouldDisplayError}
+                  errorMessage={this.state.errorMessage}
+                  placeholderText={this.state.currentPatient}
+                  inputOnChange={this.handleChange}
+                  inputName="patient-input"
+                  patients={this.state.patients}
+                />
+              </DialogContent>
+              <DialogActions>
+                  <Button onClick={closePrompt}>Cancel</Button>
+                  <Button variant="contained" onClick={this.handleSubmit}>OK</Button>
+              </DialogActions>
           </Dialog>
         </Modal>
       </div>

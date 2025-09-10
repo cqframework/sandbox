@@ -1,5 +1,5 @@
 const merge = require('webpack-merge');
-const common = require('./webpack.config.common.js'); 
+const common = require('./webpack.config.common.js');
 
 module.exports = merge(common, {
   mode: 'development',
@@ -11,5 +11,10 @@ module.exports = merge(common, {
     static: {
       publicPath: './build',
     },
+    client: { overlay: false },
+      historyApiFallback: {
+          index: '/index.html',
+          disableDotRule: true,
+      },
   },
 });

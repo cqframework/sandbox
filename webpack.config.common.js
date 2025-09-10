@@ -59,7 +59,7 @@ const config = {
     mainFields: ['browser', 'main'],
     fallback: {
       "path": false,
-    } 
+    }
   },
   resolveLoader: {
     modules: [path.resolve(path.join(processPath, 'node_modules'))],
@@ -89,7 +89,11 @@ const config = {
           },
           {
             loader: 'sass-loader',
-            options: {},
+            options: {
+                implementation: require('sass'),
+                sourceMap: true,
+                sassOptions: { quietDeps: true },
+            },
           }
           ],
       },
