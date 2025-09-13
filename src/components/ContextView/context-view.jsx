@@ -168,6 +168,18 @@ export class ContextView extends Component {
                             onChange={this.onSelectChange}
                         />
                     </Field>
+                    <div style={{ textAlign: 'right', margin: '0.5rem 0' }}>
+                        {this.state.isEditingRequest ? (
+                            <>
+                                <button onClick={this.onCancelEdit}>Cancel</button>
+                                <button onClick={this.onResend} style={{ marginLeft: '0.5rem' }}>
+                                    Resend
+                                </button>
+                            </>
+                        ) : (
+                            <button onClick={this.onEditRequest}>Edit request</button>
+                        )}
+                    </div>
                     {this.state.isEditingRequest ? (
                         <div>
                             <h3 className={styles.title}>Request (editable)</h3>
@@ -176,12 +188,6 @@ export class ContextView extends Component {
                                 value={this.state.draftRequest}
                                 onChange={this.onDraftChange}
                             />
-                            <div style={{ marginTop: '0.5rem', textAlign: 'right' }}>
-                                <button onClick={this.onCancelEdit} className={styles['context-toggle']}>Cancel</button>
-                                <button onClick={this.onResend} className={styles['context-toggle']} style={{ marginLeft: '0.5rem' }}>
-                                    Resend
-                                </button>
-                            </div>
                         </div>
                     ) : (
                         <>
@@ -190,11 +196,6 @@ export class ContextView extends Component {
                                 panelText={serviceExchange ? serviceExchange.request : 'No request made to CDS Service'}
                                 isExpanded={false}
                             />
-                            {serviceExchange?.request ? (
-                                <div style={{ textAlign: 'right', margin: '0.5rem 0 1rem' }}>
-                                    <button onClick={this.onEditRequest} className={styles['context-toggle']}>Edit request</button>
-                                </div>
-                            ) : null}
                         </>
                     )}
                     <ExchangePanel
