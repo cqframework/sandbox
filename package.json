@@ -45,7 +45,6 @@
     "debounce": "^1.2.0",
     "debounce-promise": "^3.1.2",
     "fast-deep-equal": "^2.0.1",
-    "fibers": "^5.0.3",
     "html-webpack-plugin": "^5.6.0",
     "identity-obj-proxy": "^3.0.0",
     "immer": "^3.2.0",
@@ -96,7 +95,7 @@
     "jest-environment-jsdom": "^24.9.0",
     "jest-environment-jsdom-global": "^1.0.3",
     "mini-css-extract-plugin": "^1.6.1",
-    "node-sass": "^4.12.0",
+    "sass": "^1.77.0",
     "postcss": "^8.1.0",
     "postcss-custom-properties": "^11.0.0",
     "postcss-loader": "^4.2.0",
@@ -125,9 +124,12 @@
       "/store.js"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(@mui|@babel|@emotion)/)"
+      "node_modules/(?!(@mui|@babel|@emotion|@uiw|@codemirror|@marijn|@lezer|codemirror)/)"
     ],
     "testEnvironment": "jest-environment-jsdom-global"
+  },
+  "overrides": {
+    "cheerio": "1.0.0-rc.12"
   },
   "browserslist": {
     "production": [

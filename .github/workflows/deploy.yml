@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 18
       - run: |
-          npm ci
+          npm ci --legacy-peer-deps
           npm run lint
           npm run test
           npm run build
