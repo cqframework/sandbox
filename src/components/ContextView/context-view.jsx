@@ -5,18 +5,21 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import forIn from 'lodash/forIn';
+import axios from 'axios';
 
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import MuiButton from '@mui/material/Button';
 import Select from 'react-select';
 import ExchangePanel from '../ExchangePanel/exchange-panel';
 import MessagePanel from '../MessagePanel/message-panel';
 
 import styles from './context-view.css';
 
-import { selectService } from '../../actions/service-exchange-actions';
+import { selectService, storeExchange } from '../../actions/service-exchange-actions';
 import { setContextVisibility } from '../../actions/ui-actions';
 import { getServicesByHook } from '../../reducers/helpers/services-filter';
+import generateJWT from '../../retrieve-data-helpers/jwt-generator';
 
 const propTypes = {
   /**
@@ -48,6 +51,10 @@ const propTypes = {
    * Flag to determine if the context view will be visible or not (via the slide out button)
    */
   isContextVisible: PropTypes.bool.isRequired,
+  /**
+   * Function to store a service exchange (request/response) in the Redux store
+   */
+  storeExchange: PropTypes.func.isRequired,
 };
 
 /**
@@ -58,10 +65,18 @@ const propTypes = {
 export class ContextView extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isEditingRequest: false,
+      draftRequest: '',
+    };
     this.onSelectChange = this.onSelectChange.bind(this);
     this.createDropdownServices = this.createDropdownServices.bind(this);
     this.onContextToggle = this.onContextToggle.bind(this);
     this.formatOptionLabel = this.formatOptionLabel.bind(this);
+    this.onEditRequest = this.onEditRequest.bind(this);
+    this.onCancelEdit = this.onCancelEdit.bind(this);
+    this.onDraftChange = this.onDraftChange.bind(this);
+    this.onResend = this.onResend.bind(this);
   }
 
   /**
@@ -78,6 +93,53 @@ export class ContextView extends Component {
    */
   onContextToggle() {
     this.props.toggleContext();
+  }
+
+  onEditRequest() {
+    const serviceInContext = this.props.selectedService || this.props.initialService;
+    const serviceExchange = serviceInContext ? this.props.exchanges[serviceInContext] : null;
+    const request = serviceExchange ? serviceExchange.request : '';
+    const draft = typeof request === 'string' ? request : JSON.stringify(request, null, 2);
+    this.setState({ isEditingRequest: true, draftRequest: draft });
+  }
+
+  onCancelEdit() {
+    this.setState({ isEditingRequest: false });
+  }
+
+  onDraftChange(e) {
+    this.setState({ draftRequest: e.target.value });
+  }
+
+  async onResend() {
+    const serviceUrl = this.props.selectedService || this.props.initialService;
+    if (!serviceUrl) return;
+
+    let parsedRequest;
+    try {
+      parsedRequest = JSON.parse(this.state.draftRequest);
+    } catch (e) {
+      parsedRequest = this.state.draftRequest;
+    }
+
+    try {
+      const result = await axios({
+        method: 'post',
+        url: serviceUrl,
+        data: parsedRequest,
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${generateJWT(serviceUrl)}`,
+        },
+      });
+      this.props.storeExchange(serviceUrl, parsedRequest, result.data, result.status);
+    } catch (err) {
+      const status = err.response ? err.response.status : 500;
+      const response = err.response ? err.response.data : err.message;
+      this.props.storeExchange(serviceUrl, parsedRequest, response, status);
+    }
+
+    this.setState({ isEditingRequest: false });
   }
 
   /**
@@ -157,11 +219,32 @@ export class ContextView extends Component {
               }}
             />
           </FormControl>
-          <ExchangePanel
-            panelHeader=" Request"
-            panelText={serviceExchange ? serviceExchange.request : 'No request made to CDS Service'}
-            isExpanded={false}
-          />
+          {this.state.isEditingRequest ? (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px', gap: '8px' }}>
+                <MuiButton variant="outlined" size="small" onClick={this.onCancelEdit}>Cancel</MuiButton>
+                <MuiButton variant="contained" size="small" onClick={this.onResend}>Resend</MuiButton>
+              </div>
+              <textarea
+                value={this.state.draftRequest}
+                onChange={this.onDraftChange}
+                className={styles['edit-textarea']}
+              />
+            </div>
+          ) : (
+            <div>
+              <ExchangePanel
+                panelHeader=" Request"
+                panelText={serviceExchange ? serviceExchange.request : 'No request made to CDS Service'}
+                isExpanded={false}
+              />
+              {serviceExchange && serviceExchange.request && (
+                <div style={{ textAlign: 'right', marginTop: '8px' }}>
+                  <MuiButton variant="outlined" size="small" onClick={this.onEditRequest}>Edit Request</MuiButton>
+                </div>
+              )}
+            </div>
+          )}
           <ExchangePanel
             panelHeader=" Response"
             panelText={serviceExchange ? serviceExchange.response : 'No response made to CDS Service'}
@@ -207,6 +290,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   toggleContext: () => {
     dispatch(setContextVisibility());
+  },
+  storeExchange: (url, request, response, responseStatus) => {
+    dispatch(storeExchange(url, request, response, responseStatus));
   },
 });
 
