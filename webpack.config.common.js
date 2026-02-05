@@ -123,6 +123,9 @@ const config = {
       {
         from: './fhir-client.min.js',
       },
+      {
+        from: 'CNAME',
+      },
     ]),
     new webpack.DefinePlugin({
       'runtime.FHIR_URL': JSON.stringify(process.env.FHIR_URL || 'https://api.hspconsortium.org/cdshooksdstu2/open')
