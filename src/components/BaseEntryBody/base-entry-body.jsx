@@ -34,6 +34,10 @@ const propTypes = {
    * The name attribute for the Input component
    */
   inputName: PropTypes.string,
+  /**
+   * Optional controlled value for the Input component
+   */
+  value: PropTypes.string,
 };
 
 /**
@@ -48,7 +52,7 @@ const propTypes = {
  */
 const BaseEntryBody = ({
   currentFhirServer, formFieldLabel, shouldDisplayError,
-  errorMessage, placeholderText, inputOnChange, inputName,
+  errorMessage, placeholderText, inputOnChange, inputName, value,
 }) => {
   let fhirServerDisplay;
   if (currentFhirServer) {
@@ -69,6 +73,7 @@ const BaseEntryBody = ({
           label={formFieldLabel}
           name={inputName}
           placeholder={placeholderText}
+          value={value}
           onChange={inputOnChange}
           error={shouldDisplayError}
           helperText={shouldDisplayError ? errorMessage : ''}

@@ -10,11 +10,20 @@ import MuiButton from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MuiSelect from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import CloseIcon from '@mui/icons-material/Close';
 
 import styles from './fhir-server-entry.css';
 import BaseEntryBody from '../BaseEntryBody/base-entry-body';
 import retrieveFhirMetadata from '../../retrieve-data-helpers/fhir-metadata-retrieval';
+
+const presetFhirServers = [
+  { label: 'Opioid CDS (R4)', url: 'https://opioid-sandbox.cqframework.org/cdc/opioid-cds-r4/ehr/fhir' },
+  { label: 'SMART Health IT (DSTU2)', url: 'https://launch.smarthealthit.org/v/r2/fhir' },
+];
 
 const propTypes = {
   /**
@@ -78,6 +87,7 @@ export class FhirServerEntry extends Component {
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handlePresetSelect = this.handlePresetSelect.bind(this);
     this.handleResetDefaultServer = this.handleResetDefaultServer.bind(this);
   }
 
@@ -95,6 +105,10 @@ export class FhirServerEntry extends Component {
 
   handleChange(e) {
     this.setState({ userInput: e.target.value });
+  }
+
+  handlePresetSelect(e) {
+    this.setState({ userInput: e.target.value, shouldDisplayError: false, errorMessage: '' });
   }
 
   /**
@@ -170,12 +184,26 @@ export class FhirServerEntry extends Component {
           )}
         </DialogTitle>
         <DialogContent>
+          <FormControl fullWidth sx={{ mt: 1, mb: 2 }}>
+            <InputLabel id="preset-fhir-server-label">Select a FHIR Server</InputLabel>
+            <MuiSelect
+              labelId="preset-fhir-server-label"
+              label="Select a FHIR Server"
+              value={presetFhirServers.some((s) => s.url === this.state.userInput) ? this.state.userInput : ''}
+              onChange={this.handlePresetSelect}
+            >
+              {presetFhirServers.map((server) => (
+                <MenuItem key={server.url} value={server.url}>{server.label}</MenuItem>
+              ))}
+            </MuiSelect>
+          </FormControl>
           <BaseEntryBody
             currentFhirServer={this.props.currentFhirServer}
-            formFieldLabel="Enter a FHIR Server URL"
+            formFieldLabel="Or enter a FHIR Server URL"
             shouldDisplayError={this.state.shouldDisplayError}
             errorMessage={this.state.errorMessage}
             placeholderText={this.props.currentFhirServer}
+            value={this.state.userInput}
             inputOnChange={this.handleChange}
             inputName="fhir-server-input"
           />
