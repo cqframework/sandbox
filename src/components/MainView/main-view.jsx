@@ -260,6 +260,13 @@ export class MainView extends Component {
           <Header />
         </div>
         {this.props.isLoadingData ? '' : container}
+        {!this.props.isLoadingData && (
+          <footer className={styles.footer}>
+            <a href="https://cds-hooks.hl7.org/" target="_blank" rel="noreferrer noopener">CDS Hooks Specification</a>
+            <span className={styles['footer-separator']}>|</span>
+            <a href="https://github.com/cqframework/sandbox/issues/new" target="_blank" rel="noreferrer noopener">Report an Issue</a>
+          </footer>
+        )}
       </div>
     );
   }

@@ -132,7 +132,7 @@ export class ServicesEntry extends Component {
           <Typography fontStyle="italic">
             Note: See&nbsp;
             <a
-              href="https://cds-hooks.org/specification/current/#discovery"
+              href="https://cds-hooks.hl7.org/#discovery"
               rel="noreferrer noopener"
               target="_blank"
             >
