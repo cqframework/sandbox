@@ -187,6 +187,7 @@ export class MainView extends Component {
     await retrieveDiscoveryServices().catch(() => {
       this.props.setLoadingStatus(false);
     });
+    await retrieveDiscoveryServices('https://sandbox-services.cds-hooks.org/cds-services').catch(() => {});
 
     // Remove the loading indicator from the UI and display rendered components
     this.props.setLoadingStatus(false);

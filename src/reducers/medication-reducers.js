@@ -22,6 +22,12 @@ const getQueryParam = (param) => {
   return parsedParams[param];
 };
 
+const validSupplyDurations = [7, 14, 30, 60, 90];
+const getSupplyDuration = () => {
+  const parsed = parseInt(getQueryParam('prescribedSupplyDuration'), 10);
+  return validSupplyDurations.includes(parsed) ? parsed : 30;
+};
+
 // Construct the FHIR resource for MedicationRequest/Order from a chosen condition and/or medication
 export const createFhirResource = (fhirVersion, patientId, state, patientConditions) => {
   const isSTU3OrHigher = compareVersions(fhirVersion, '3.0.1') >= 0;
@@ -219,7 +225,7 @@ const initialState = {
    * The dispense request information
    */
   dispenseRequest: {
-    supplyDuration: parseInt(getQueryParam('prescribedSupplyDuration'), 10) || 30,
+    supplyDuration: getSupplyDuration(),
   },
   /**
    * The dates and enabled status of the medication start and end dates
@@ -403,10 +409,11 @@ const medicationReducers = (state = initialState, action) => {
 
       // Clear medication form state when a new patient is selected
       case types.GET_PATIENT_SUCCESS: {
+        const prescribedMed = getPrescribableFromID(getQueryParam('prescribedMedication'));
         return {
           ...state,
-          medListPhase: 'begin',
-          userInput: '',
+          medListPhase: prescribedMed ? 'done' : 'begin',
+          userInput: prescribedMed ? prescribedMed.name : '',
           options: {
             ingredient: [],
             components: [],
@@ -415,14 +422,14 @@ const medicationReducers = (state = initialState, action) => {
           decisions: {
             ingredient: null,
             components: null,
-            prescribable: null,
+            prescribable: prescribedMed || null,
           },
           medicationInstructions: {
             number: 1,
             frequency: 'daily',
           },
           dispenseRequest: {
-            supplyDuration: 30,
+            supplyDuration: getSupplyDuration(),
           },
           prescriptionDates: {
             start: {

@@ -24,7 +24,7 @@ describe('CDS Services Reducer', () => {
     state = {
       configuredServices: {},
       configuredServiceUrls: [],
-      defaultUrl: 'https://sandbox-services.cds-hooks.org/cds-services',
+      defaultUrl: 'https://opioid-sandbox.cqframework.org/cdc/opioid-cds-r4/cds-service/cds-services',
       testServicesUrl: null,
     };
   });
