@@ -7,7 +7,6 @@ import cdsServicesReducers from './cds-services-reducers';
 import hookReducers from './hook-reducers';
 import serviceExchangeReducers from './service-exchange-reducers';
 import cardDemoReducers from './card-demo-reducers';
-import pamaReducers from './pama-reducers';
 import { medicationReducers } from './medication-reducers';
 
 const reducers = combineReducers({
@@ -18,7 +17,6 @@ const reducers = combineReducers({
   serviceExchangeState: serviceExchangeReducers,
   cardDemoState: cardDemoReducers,
   medicationState: medicationReducers,
-  pama: pamaReducers,
 });
 
 export default reducers;
