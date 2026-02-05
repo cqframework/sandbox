@@ -156,7 +156,6 @@ export class Header extends Component {
     if (this.props.hook === hook && this.props.screen === screen) {
       this.props.dispatch({ type: 'EXPLICIT_HOOK_TRIGGER' });
 
-      // TODO cut this logic out and use generic handers as for pama
       if (services && Object.keys(services).length) {
         forIn(services, (val, key) => {
           // If the tab is clicked again, make sure the Sandbox is qualified to call out to EHR's based
@@ -299,7 +298,6 @@ export class Header extends Component {
                     <button className={this.getNavClasses('patient-view')} onClick={() => this.switchHook('patient-view')}>Patient View</button>
                     <button className={this.getNavClasses('rx-view')} onClick={() => this.switchHook('order-select', 'rx-view')}>Rx View</button>
                     <button className={this.getNavClasses('rx-sign')} onClick={() => this.switchHook('order-sign', 'rx-sign')}>Rx Sign</button>
-                    <button className={this.getNavClasses('pama')} onClick={() => this.switchHook('order-select', 'pama')}>PAMA Imaging</button>
                   </div>
                 </div>
               </Box>

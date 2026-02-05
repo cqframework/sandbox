@@ -62,14 +62,6 @@ export const TOGGLE_DATE = 'TOGGLE_DATE';
 export const STORE_DISPENSE_REQUEST = 'STORE_DISPENSE_REQUEST';
 export const ORDER_SIGN_BUTTON_PRESS = 'ORDER_SIGN_BUTTON_PRESS';
 
-// Order Imaging
-export const APPLY_PAMA_RATING = 'APPLY_PAMA_RATING';
-export const UPDATE_STUDY = 'UPDATED_STUDY';
-export const ADD_REASON = 'ADD_REASON';
-export const REMOVE_REASON = 'REMOVE_REASON';
-export const REMOVE_STUDY = 'REMOVE_STUDY';
-export const UPDATE_IMAGING_ORDER = 'UPDATE_IMAGING_ORDER';
-
 export const TRIGGER_ORDER_SIGN = 'TRIGGER_ORDER_SIGN';
 
 // Suggestions and apps

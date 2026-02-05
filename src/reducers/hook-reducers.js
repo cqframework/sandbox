@@ -34,18 +34,6 @@ const initialState = {
         },
       },
     },
-    pama: {
-      triggerPoints: {
-        'pama/order-select': {
-          hook: 'order-select',
-          lastExchangeRound: 0,
-        },
-        'pama/order-sign': {
-          hook: 'order-sign',
-          lastExchangeRound: 0,
-        },
-      },
-    },
   },
 };
 
